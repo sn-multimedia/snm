@@ -1,247 +1,481 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>SN Multimedia</title>
+  <style>
+    :root{
+      --gold: #d4af37;
+      --gold-2: #f1c84a;
+      --bg-1: #000;
+      --bg-2: #2b1400; /* deep warm */
+      --card: #111;
+      --muted: #bdbdbd;
+      --container-max: 1200px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      background: var(--bg-1);
+      color: #fff;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.6;
+    }
+
+    /* ===== HEADER ===== */
+    header{
+      position:fixed;
+      top:0;left:0;width:100%;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:18px 60px;
+      z-index:1200;
+      transition: background 300ms, padding 300ms;
+    }
+    header.transparent{ background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.0)); }
+    header.scrolled{ background: rgba(0,0,0,0.92); padding:12px 40px; box-shadow:0 6px 20px rgba(0,0,0,0.6); }
+
+    .logo img{ height:48px; display:block; }
+
+    nav{
+      display:flex;gap:28px;align-items:center;
+    }
+    nav a{
+      color:#fff;text-decoration:none;font-weight:500; letter-spacing:0.2px;
+      transition: color 200ms, transform 150ms;
+    }
+    nav a:hover{ color:var(--gold); transform:translateY(-2px); }
+
+    /* hamburger (mobile) */
+    .hamburger{ display:none; cursor:pointer; width:34px; height:26px; align-items:center; justify-content:center; }
+    .hamburger span{
+      display:block;height:3px;width:100%;background:#fff;border-radius:3px;transition:all .3s;
+    }
+    .hamburger .gap{ height:6px; }
+
+    /* ===== HERO ===== */
+    .hero{
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+      text-align:center; padding:0 40px;
+      background: linear-gradient(120deg, #000 0%, #2b1400 45%, #5a3400 100%);
+      position:relative;
+    }
+    .hero-inner{ max-width:var(--container-max); width:100%; padding: 120px 40px; margin:0 auto; }
+    .hero h1{
+      font-size:84px; line-height:0.9; color:var(--gold);
+      letter-spacing:2px; font-weight:800; margin-bottom:18px;
+      text-transform:uppercase;
+    }
+    .hero p{
+      color: #e6d9bf; font-size:20px; max-width:900px; margin:0 auto 32px;
+    }
+    .cta{
+      display:inline-block;background:var(--gold); color:#000; padding:14px 34px; border-radius:30px;
+      font-weight:700; text-decoration:none; transition:transform .25s, box-shadow .25s;
+      box-shadow:0 8px 24px rgba(212,175,55,0.18);
+    }
+    .cta:hover{ transform:translateY(-4px); box-shadow:0 16px 40px rgba(212,175,55,0.22); }
+
+    /* container for content sections */
+    .container{
+      max-width:var(--container-max);
+      margin:0 auto;
+      padding:80px 60px; /* roomy sides */
+    }
+    /* ensure not too close to edges on narrow screens */
+    section { padding-top:28px; padding-bottom:28px; }
+
+    /* ===== SERVICES ===== */
+    .services-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+      gap:24px;
+      align-items:start;
+    }
+    .service-card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(212,175,55,0.08);
+      padding:22px;border-radius:12px; min-height:220px;
+      display:flex;flex-direction:column;gap:12px;
+      transition: transform .25s, box-shadow .25s;
+    }
+    .service-card:hover{ transform:translateY(-8px); box-shadow:0 20px 40px rgba(0,0,0,0.6); }
+    .service-card img.icon{ width:64px;height:64px;object-fit:contain; }
+    .service-card h3{ color:var(--gold); margin-top:6px; font-size:20px; }
+    .service-card p{ color:var(--muted); font-size:14px; flex:1; }
+
+    /* demo portfolio row under services */
+    .demo-row{ margin-top:16px; display:grid; grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); gap:12px; }
+    .demo-item{ border-radius:8px; overflow:hidden; border:1px solid rgba(255,255,255,0.04); background:#0b0b0b; }
+    .demo-item img{ width:100%; height:100px; object-fit:cover; display:block; transition:transform .35s; }
+    .demo-item:hover img{ transform:scale(1.06); }
+
+    /* ===== PROJECTS (bigger showcase) ===== */
+    .projects-grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:20px; }
+    .project-card{ border-radius:10px; overflow:hidden; border:1px solid rgba(212,175,55,0.06); background:#0f0f0f; }
+    .project-card img{ width:100%; height:190px; object-fit:cover; display:block; }
+    .project-card .meta{ padding:16px; }
+    .project-card h4{ color:var(--gold); margin-bottom:6px; }
+    .project-card p{ color:var(--muted); font-size:14px; }
+
+    /* ===== ABOUT ===== */
+    .about-section{ display:flex; gap:30px; align-items:center; flex-wrap:wrap; }
+    .about-img{ flex:0 0 320px; max-width:320px; border-radius:10px; overflow:hidden; border:1px solid rgba(212,175,55,0.08); }
+    .about-img img{ width:100%; display:block; }
+    .about-text{ flex:1; color:#e9dec7; }
+
+    /* ===== CONTACT ===== */
+    .contact-grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:20px; }
+    .contact-card{ background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02)); padding:20px; border-radius:10px; border:1px solid rgba(212,175,55,0.06); text-align:center;}
+    .contact-card h5{ color:var(--gold); margin-bottom:8px; }
+    .contact-card p{ color:var(--muted); font-size:14px; }
+
+    /* ===== FOOTER ===== */
+    footer{ padding:40px 0; text-align:center; color:#9b9b9b; border-top:1px solid rgba(255,255,255,0.02); }
+    footer h4{ color:var(--gold); margin-bottom:8px; }
+
+    /* ===== FLOATING WHATSAPP ===== */
+    .whatsapp-float{
+      position:fixed; right:24px; bottom:24px; width:64px; height:64px; border-radius:50%;
+      background:#25d366; color:#fff; display:flex; align-items:center; justify-content:center;
+      box-shadow: 0 6px 30px rgba(37,211,102,0.18);
+      z-index:1300; cursor:pointer; text-decoration:none;
+      transition: transform .18s;
+      animation: pulse 2.2s infinite;
+    }
+    .whatsapp-float:hover{ transform:translateY(-6px) scale(1.03); box-shadow: 0 10px 40px rgba(37,211,102,0.28); }
+    @keyframes pulse {
+      0%{ box-shadow:0 0 0 0 rgba(37,211,102,0.18); }
+      60%{ box-shadow:0 0 30px 12px rgba(37,211,102,0.06); transform:scale(1.03); }
+      100%{ box-shadow:0 0 0 0 rgba(37,211,102,0.00); transform:scale(1); }
+    }
+
+    /* small tweaks */
+    .muted { color:var(--muted); }
+    .section-title{ text-align:center; font-size:30px; color:var(--gold); margin-bottom:10px; }
+
+    /* responsive */
+    @media (max-width: 1024px){
+      header{ padding:14px 36px; }
+      .hero h1{ font-size:64px; }
+      .container{ padding:60px 36px; }
+    }
+    @media (max-width: 768px){
+      header{ padding:12px 20px; }
+      nav{ display:none; } /* hidden, mobile uses overlay menu */
+      .hamburger{ display:flex; gap:6px; flex-direction:column; }
+      .hero h1{ font-size:40px; }
+      .hero p{ font-size:15px; }
+      .hero-inner{ padding:100px 18px; }
+      .container{ padding:40px 18px; }
+      .about-img{ flex-basis:100%; max-width:100%; }
+    }
+
+    /* mobile slide-in nav */
+    .mobile-nav {
+      position: fixed; top:0; right:-100%; height:100vh; width:260px; background:linear-gradient(180deg, rgba(0,0,0,0.98), rgba(40,20,0,0.95));
+      padding:80px 24px; display:flex; flex-direction:column; gap:20px; transition:right .32s cubic-bezier(.2,.9,.3,1); z-index:1400;
+      border-left:1px solid rgba(255,255,255,0.03);
+    }
+    .mobile-nav.open{ right:0; }
+    .mobile-nav a{ color:#fff; text-decoration:none; font-size:18px; display:block; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.02); }
+    .mobile-nav a:hover{ color:var(--gold); }
+
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 </head>
-
 <body>
-  <!-- Header -->
-  <section id="header">
-    <div class="header container">
-      <div class="nav-bar">
-        <div class="brand">
-          <a href="#hero">
-            <h1><span>SNM</span>Multimedia </h1>
-          </a>
-        </div>
-        <div class="nav-list">
-          <div class="hamburger">
-            <div class="bar"></div>
+
+  <!-- HEADER -->
+  <header id="site-header" class="transparent">
+    <div class="logo">
+      <!-- pastikan file logo PNG berada satu folder dengan HTML -->
+      <img src="bahan/logosnm1.png" alt="SNM Logo"> SNMultimedia
+    </div>
+
+    <!-- desktop nav -->
+    <nav class="desktop-nav" id="desktop-nav">
+      <a href="#home">Home</a>
+      <a href="#services">Services</a>
+      <a href="#projects">Portfolio</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <!-- hamburger for mobile -->
+    <div class="hamburger" id="hamburger" aria-label="menu" aria-expanded="false">
+      <span></span><div class="gap"></div><span></span>
+    </div>
+  </header>
+
+  <!-- mobile nav slide -->
+  <nav class="mobile-nav" id="mobile-nav">
+    <a href="#home" onclick="closeMobile()">Home</a>
+    <a href="#services" onclick="closeMobile()">Services</a>
+    <a href="#projects" onclick="closeMobile()">Portfolio</a>
+    <a href="#about" onclick="closeMobile()">About</a>
+    <a href="#contact" onclick="closeMobile()">Contact</a>
+    <div style="margin-top:16px;color:var(--muted);font-size:14px">Follow us</div>
+    <div style="display:flex;gap:12px;margin-top:8px">
+      <a href="#" style="color:#fff"><i class="fab fa-instagram"></i></a>
+      <a href="#" style="color:#fff"><i class="fab fa-facebook"></i></a>
+      <a href="#" style="color:#fff"><i class="fab fa-youtube"></i></a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="home" class="hero" role="banner">
+    <div class="hero-inner">
+      <h1>SN Multimedia<span style="color:transparent">™</span></h1>
+      <p>Crafting stories through Film, Ads, Photography, Design & More — layanan multimedia profesional untuk kebutuhan brand dan event Anda.</p>
+      <a href="#projects" class="cta">Explore Our Work</a>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" class="container" aria-labelledby="services-title">
+    <h2 id="services-title" class="section-title">Layanan Kami</h2>
+    <p class="muted" style="text-align:center; max-width:900px; margin:8px auto 28px;">
+      Kami menghadirkan layanan multimedia lengkap: fotografi, video production, desain grafis, dan layanan digital marketing. Di bawah tiap layanan ada demo portofolio yang bisa kamu lihat.
+    </p>
+
+    <div class="services-grid">
+      <!-- Fotografi -->
+      <div class="service-card">
+        <div style="display:flex;align-items:center;gap:12px">
+          <img src="img/icon foto.png" class="icon" alt="fotografi">
+          <div>
+            <h3>Fotografi</h3>
+            <div style="font-size:13px;color:var(--muted)">Foto produk, event, profil perusahaan, indoor/outdoor, retouching.</div>
           </div>
-          <ul>
-            <li><a href="#hero" data-after="Home">Home</a></li>
-            <li><a href="#services" data-after="Service">Services</a></li>
-            <li><a href="#projects" data-after="Projects">Projects</a></li>
-            <li><a href="#about" data-after="About">About</a></li>
-            <li><a href="#contact" data-after="Contact">Contact</a></li>
-          </ul>
+        </div>
+        <p class="muted">Layanan foto profesional yang menangkap detil dan mood brand Anda. Cocok untuk katalog, portofolio, dan dokumentasi event.</p>
+
+        <!-- demo thumbnails -->
+        <div class="demo-row" aria-hidden="false">
+          <div class="demo-item"><img src="img/12.jpeg" alt="demo foto 1"></div>
+          <div class="demo-item"><img src="img/13.jpeg" alt="demo foto 2"></div>
+          <div class="demo-item"><img src="https://via.placeholder.com/400x250/222/fff?text=Foto+Demo" alt="demo foto 3"></div>
+        </div>
+      </div>
+
+      <!-- Video -->
+      <div class="service-card">
+        <div style="display:flex;align-items:center;gap:12px">
+          <img src="img/icon vd.png" class="icon" alt="video">
+          <div>
+            <h3>Video Production</h3>
+            <div style="font-size:13px;color:var(--muted)">Profil perusahaan, promosi, dokumentasi acara, editing profesional.</div>
+          </div>
+        </div>
+        <p class="muted">Produksi video dengan storytelling yang kuat — dari pra-produksi hingga finishing.</p>
+
+        <div class="demo-row">
+          <div class="demo-item"><img src="img/14.jpeg" alt="video demo 1"></div>
+          <div class="demo-item"><img src="img/15.jpeg" alt="video demo 2"></div>
+          <div class="demo-item"><img src="https://via.placeholder.com/400x250/333/fff?text=Video+Demo" alt="video demo 3"></div>
+        </div>
+      </div>
+
+      <!-- Desain Grafis -->
+      <div class="service-card">
+        <div style="display:flex;align-items:center;gap:12px">
+          <img src="img/icon dg.png" class="icon" alt="desain grafis">
+          <div>
+            <h3>Desain Grafis</h3>
+            <div style="font-size:13px;color:var(--muted)">Logo, branding kit, poster, brosur, dan konten sosial media</div>
+          </div>
+        </div>
+        <p class="muted">Desain yang komunikatif dan estetik untuk kebutuhan promosi dan identitas visual.</p>
+
+        <div class="demo-row">
+          <div class="demo-item"><img src="https://via.placeholder.com/400x250/444/fff?text=Branding+1" alt="dg1"></div>
+          <div class="demo-item"><img src="https://via.placeholder.com/400x250/555/fff?text=Poster+1" alt="dg2"></div>
+          <div class="demo-item"><img src="https://via.placeholder.com/400x250/666/fff?text=Social+Post" alt="dg3"></div>
+        </div>
+      </div>
+
+      <!-- Digital Marketing -->
+      <div class="service-card">
+        <div style="display:flex;align-items:center;gap:12px">
+          <img src="img/icon pld.png" class="icon" alt="digital marketing">
+          <div>
+            <h3>Digital Marketing</h3>
+            <div style="font-size:13px;color:var(--muted)">Strategi visual branding online, iklan display & sosial media</div>
+          </div>
+        </div>
+        <p class="muted">Kampanye visual yang dirancang untuk meningkatkan engagement & konversi.</p>
+
+        <div class="demo-row">
+          <div class="demo-item"><img src="https://via.placeholder.com/400x250/777/fff?text=Ad+Creative" alt="ad1"></div>
+          <div class="demo-item"><img src="https://via.placeholder.com/400x250/888/fff?text=Campaign" alt="ad2"></div>
+          <div class="demo-item"><img src="https://via.placeholder.com/400x250/999/fff?text=Analytics" alt="ad3"></div>
         </div>
       </div>
     </div>
   </section>
-  <!-- End Header -->
 
+  <!-- PROJECTS / PORTFOLIO -->
+  <section id="projects" style="background:linear-gradient(180deg, transparent, rgba(0,0,0,0.06));">
+    <div class="container">
+      <h2 class="section-title">Portfolio Terbaru</h2>
+      <p class="muted" style="text-align:center; margin-bottom:28px;">Contoh project & dokumentasi yang pernah kami kerjakan.</p>
 
-  <!-- Hero Section  -->
-  <section id="hero">
-    <video autoplay muted loop id="background-video">
-      <source src="./img/banner.mp4" type="video/mp4" />
-    </video>
-    <div class="overlay"></div>
-    <div class="hero container">
-      <div>
-        <h1>Welcome, <span></span></h1>
-        <h1>to Profile<span></span></h1>
-        <h1>SN_multimedia<span></span></h1>
-        <a href="#projects" type="button" class="cta">Portfolio</a>
+      <div class="projects-grid">
+        <div class="project-card">
+          <img src="img/12.jpeg" alt="Photoshoot Wisuda">
+          <div class="meta">
+            <h4>Photoshoot Wisuda</h4>
+            <p class="muted">Outdoor session, pengambilan foto besar & detail.</p>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <img src="img/13.jpeg" alt="Foto Wisuda">
+          <div class="meta">
+            <h4>Foto Wisuda</h4>
+            <p class="muted">Paket dokumentasi acara wisuda.</p>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <img src="img/11.jpeg" alt="Prewedding">
+          <div class="meta">
+            <h4>Prewedding</h4>
+            <p class="muted">Foto prewedding natural & artistik.</p>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <img src="img/14.jpeg" alt="Haflah">
+          <div class="meta">
+            <h4>Haflah Akhirussanah</h4>
+            <p class="muted">Dokumentasi acara & highlight video.</p>
+          </div>
+        </div>
+      </div>
+      <!-- link ke galeri lengkap -->
+      <div style="text-align:center; margin-top:26px;">
+        <a class="cta" href="#contact">Butuh Contoh Lain? Kontak Kami</a>
       </div>
     </div>
   </section>
-  <!-- End Hero Section  -->
 
-  <!-- Service Section -->
-  <section id="services">
-    <div class="services container">
-      <div class="service-top">
-        <h1 class="section-title">Serv<span>i</span>ces</h1>
-        <p>Kami menyediakan layanan multimedia profesional yang dirancang untuk memenuhi berbagai kebutuhan visual dan komunikasi digital Anda. 
-          Dengan tim kreatif berpengalaman dan teknologi terkini, kami menghadirkan solusi multimedia yang inovatif, efektif, dan tepat sasaran.</p>
+  <!-- ABOUT -->
+  <section id="about" class="container">
+    <div class="about-section">
+      <div class="about-img">
+        <img src="bahan/logosnm.png" alt="SN Multimedia Logo">
       </div>
-      <div class="service-bottom">
-        <div class="service-item">
-          <div class="icon"><img src="img/icon foto.png" /></div>
-          <h2>Fotografi</h2>
-          <p>-Fotografi produk</p>
-           <p>-Fotografi event</p> 
-            <p>-profil perusahaan</p> 
-            <p>-Foto Indoor - Outdoor</p> 
-            <p>-Retouching dan editing foto</p>
-        </div>
-        <div class="service-item">
-          <div class="icon"><img src="img/icon vd.png" /></div>
-          <h2>Video Production</h2>
-          <p>-Video profil perusahaan</p>
-           <p>-Video promosi produk</p> 
-            <p>-Video dokumentasi acara</p> 
-            <p>-Editing video profesional</p> 
-        </div>
-        <div class="service-item">
-          <div class="icon"><img src="img/icon dg.png" /></div>
-          <h2>Desain Grafis</h2>
-          <p>-Pembuatan logo, branding kit, dan identitas visual</p>
-           <p>-Desain poster, brosur, flyer, dan materi promosi lainnya</p> 
-            <p>-Konten visual untuk media sosial</p>
-
-        </div>
-        <div class="service-item">
-          <div class="icon"><img src="img/icon pld.png" /></div>
-          <h2>Layanan Digital Marketing Visual</h2>
-          <p>-Konten visual untuk kampanye digital</p>
-          <p>-Desain iklan display & social media</p> 
-           <p>-Strategi visual branding online</p>
-        </div>
+      <div class="about-text">
+        <h2 class="section-title">Tentang Kami</h2>
+        <p>
+          SN Multimedia adalah perusahaan kreatif bergerak di bidang multimedia — fotografi, videografi, desain grafis, dan digital marketing.
+          Kami mengedepankan storytelling visual dan hasil yang profesional untuk kebutuhan brand, event, dan personal. Dengan tim berpengalaman, teknologi terkini, dan perhatian terhadap detail, kami siap membantu mewujudkan ide menjadi karya.
+        </p>
+        <p style="margin-top:12px" class="muted">Butuh penawaran khusus? <a href="#contact" style="color:var(--gold); text-decoration:none">Hubungi kami</a>.</p>
       </div>
     </div>
   </section>
-  <!-- End Service Section -->
 
-  <!-- Projects Section -->
-  <section id="projects">
-    <div class="projects container">
-      <div class="projects-header">
-        <h1 class="section-title">Recent <span>Projects</span></h1>
+  <!-- CONTACT -->
+  <section id="contact" class="container">
+    <h2 class="section-title">Kontak Kami</h2>
+    <p class="muted" style="text-align:center; max-width:900px; margin:8px auto 28px;">Hubungi kami untuk konsultasi & penawaran harga.</p>
+
+    <div class="contact-grid">
+      <div class="contact-card">
+        <h5>Telepon</h5>
+        <p>+62 822-6868-1607</p>
       </div>
-      <div class="all-projects">
-        <div class="project-item">
-          <div class="project-info">
-            <h1> Photoshot Wisuda</h1>
-            <h2>Outdoor</h2>
-            <p></p>
-          </div>
-          <div class="project-img">
-            <a href="perbaikan.html"><img src="./img/12.jpeg" alt="img"></a>
-          </div>
-        </div>
-        <div class="project-item">
-          <div class="project-info">
-            <h1>Foto Wisuda</h1>
-            <h2>Paket 1</h2>
-            <p></p>
-          </div>
-          <div class="project-img">
-            <a href="perbaikan.html"><img src="./img/13.jpeg" alt="img"></a>
-          </div>
-        </div>
-        <div class="project-item">
-          <div class="project-info">
-            <h1>Prewedding</h1>
-            <h2>Foto Wedding</h2>
-            <p></p>
-          </div>
-          <div class="project-img">
-            <a href="perbaikan.html"><img src="./img/11.jpeg" alt="img"></a>
-          </div>
-        </div>
-        <div class="project-item">
-          <div class="project-info">
-            <h1>Haflah</h1>
-            <h2>Haflah AKhirussanah</h2>
-            <p> </p>
-          </div>
-          <div class="project-img">
-            <a href="perbaikan.html"><img src="./img/14.jpeg" alt="img"></a>
-          </div>
-        </div>
-        <div class="project-item">
-          <div class="project-info">
-            <h1>Haflah</h1>
-            <h2>Haflah AKhirussanah</h2>
-            <p> </p>
-          </div>
-          <div class="project-img">
-            <a href="perbaikan.html"></a><img src="./img/15.jpeg" alt="img">
-          </div>
-        </div>
+      <div class="contact-card">
+        <h5>Email</h5>
+        <p>snmultimedia@gmail.com</p>
+      </div>
+      <div class="contact-card">
+        <h5>Alamat</h5>
+        <p>Jl. Mekarsari No.4, Jambean, Kalibeber, Mojotengah, Wonosobo, Jawa Tengah</p>
       </div>
     </div>
-  </section>
-  <!-- End Projects Section -->
 
-  <!-- About Section -->
-  <section id="about">
-    <div class="about container">
-      <div class="col-left">
-        <div class="about-img">
-          <img src="./img/LOGO SNM.png" alt="img">
-        </div>
-      </div>
-      <div class="col-right">
-        <h1 class="section-title">About <span>me</span></h1>
-        <h2>Jasa Multimedia</h2>
-        <p>SN Multimedia adalah perusahaan yang bergerak di bidang jasa multimedia kreatif yang berfokus pada solusi visual dan digital untuk berbagai kebutuhan bisnis dan personal. Berdiri dengan semangat inovasi dan kreativitas, SN Multimedia hadir untuk membantu klien menciptakan kesan yang kuat melalui media visual yang menarik, profesional, dan berdaya saing tinggi.
-          Kami melayani berbagai jenis kebutuhan multimedia, mulai dari desain grafis, produksi video, fotografi, animasi, hingga layanan digital branding. Dengan dukungan tim ahli yang berpengalaman dan teknologi terkini, SN Multimedia berkomitmen untuk memberikan hasil terbaik yang sesuai dengan identitas dan tujuan klien.
-          Kami percaya bahwa visual yang kuat adalah kunci untuk membangun komunikasi yang efektif. Oleh karena itu, setiap proyek yang kami kerjakan selalu mengutamakan kualitas, orisinalitas, dan ketepatan waktu.</p>
-        <a href="perbaikan.html" class="cta">Download Resume</a>
-      </div>
+    <div style="margin-top:28px; text-align:center;">
+      <a class="cta" href="https://wa.me/6282268681607" target="_blank">Hubungi via WhatsApp</a>
     </div>
   </section>
-  <!-- End About Section -->
 
-  <!-- Contact Section -->
-  <section id="contact">
-    <div class="contact container">
-      <div>
-        <h1 class="section-title">Contact <span>info</span></h1>
-      </div>
-      <div class="contact-items">
-        <a href="https://wa.me/6282268681607"><div class="contact-item"></a>
-          <a href="https://wa.me/6282268681607"><div class="icon"><img src="https://img.icons8.com/bubbles/100/000000/phone.png" /></div></a>
-          <div class="contact-info">
-            <h1>Phone</h1>
-            <i class="fab fa-whatsapp"></i><h2>+62 822-6868-1607</h2>
-
-          </div>
-        </div>
-        <div class="contact-item">
-          <div class="icon"><img src="https://img.icons8.com/bubbles/100/000000/new-post.png" /></div>
-          <div class="contact-info">
-            <h1>Email</h1>
-            <h2>snmultimedia@gmail.com</h2>
-          </div>
-        </div>
-        <div class="contact-item">
-          <div class="icon"><img src="https://img.icons8.com/bubbles/100/000000/map-marker.png" /></div>
-          <div class="contact-info">
-            <h1>Address</h1>
-            <h2>Jl. Mekarsari No.4, Jambean, Kalibeber, Kec. Mojotengah, Kabupaten Wonosobo, Jawa Tengah 56351</h2>
-          </div>
-        </div>
-      </div>
+  <!-- FOOTER -->
+  <footer>
+    <div style="max-width:var(--container-max);margin:0 auto;padding:28px 20px;">
+      <h4>SN Multimedia</h4>
+      <p class="muted">© 2025 SN Multimedia. All rights reserved.</p>
     </div>
-  </section>
-  <!-- End Contact Section -->
+  </footer>
 
-  <!-- Footer -->
-  <section id="footer">
-    <div class="footer container">
-      <div class="brand">
-        <h1><span>S</span>N <span>M</span>ultimedia</h1>
-      </div>
-      <h2>Your Complete Web Solution</h2>
-      <div class="social-icon">
-        <div class="social-item">
-          <a href="perbaikan.html"><img src="https://img.icons8.com/bubbles/100/000000/facebook-new.png" /></a>
-        </div>
-        <div class="social-item">
-          <a href="https://www.instagram.com/sn_multimediaa/"><img src="https://img.icons8.com/bubbles/100/000000/instagram-new.png" /></a>
-        </div>
-        <div class="social-item">
-          <a href="perbaikan.html"><img src="https://img.icons8.com/bubbles/100/000000/youtube.png" /></a>
-        </div>
-        <div class="social-item">
-          <a href="perbaikan.html"><img src="https://img.icons8.com/bubbles/100/000000/email.png" /></a>
-        </div>
-      </div>
-      <p>Copyright © 2025 SN_Multimedia. All rights reserved</p>
-    </div>
-  </section>
-  <!-- End Footer -->
-  <script src="./app.js"></script>
+  <!-- FLOATING WHATSAPP -->
+  <a href="https://wa.me/6282268681607" class="whatsapp-float" aria-label="WhatsApp">
+    <i class="fab fa-whatsapp" style="font-size:22px;"></i>
+  </a>
+
+  <script>
+    // header scroll behavior
+    const header = document.getElementById('site-header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) header.classList.add('scrolled');
+      else {
+        header.classList.remove('scrolled');
+        header.classList.add('transparent');
+      }
+    });
+
+    // mobile nav toggle
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobile-nav');
+    hamburger.addEventListener('click', () => {
+      const open = mobileNav.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      // animate hamburger lines
+      if(open){
+        // rotate into X
+        hamburger.querySelectorAll('span').forEach((s,i)=> {
+          if(i===0) s.style.transform = 'rotate(45deg) translate(5px,6px)';
+          if(i===1) s.style.opacity = '0';
+        });
+      } else {
+        hamburger.querySelectorAll('span').forEach((s,i)=> {
+          s.style.transform = 'none';
+          s.style.opacity = '1';
+        });
+      }
+    });
+
+    function closeMobile(){
+      mobileNav.classList.remove('open');
+      hamburger.setAttribute('aria-expanded','false');
+      hamburger.querySelectorAll('span').forEach((s)=> { s.style.transform = 'none'; s.style.opacity = '1'; });
+    }
+
+    // close mobile nav on outside click (optional)
+    document.addEventListener('click', (e) => {
+      if(window.innerWidth <= 768){
+        if(!mobileNav.contains(e.target) && !hamburger.contains(e.target) && mobileNav.classList.contains('open')){
+          closeMobile();
+        }
+      }
+    });
+
+    // smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', function(e){
+        const target = document.querySelector(this.getAttribute('href'));
+        if(target){
+          e.preventDefault();
+          window.scrollTo({ top: target.offsetTop - 72, behavior: 'smooth' });
+          if(window.innerWidth <= 768) closeMobile();
+        }
+      });
+    });
+
+  </script>
 </body>
-
 </html>
-
